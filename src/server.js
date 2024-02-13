@@ -1,13 +1,26 @@
 import Fastify from "fastify"
 import fastifyBasicAuth from "@fastify/basic-auth"
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { readFileSync } from 'fs';
 
 
 const port = 3000;
 const authenticate = {realm: 'Westeros'}
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const fastify = Fastify({
-    logger: true
-})
+    logger: true,
+    http2: true,
+    https: {
+      key: readFileSync(join(__dirname, '..', 'server.key')),
+      cert: readFileSync(join(__dirname, '..', 'server.crt')),
+      allowHTTP1: true, // nécessaire pour postman
+    }
+});
+
 
 fastify.register(fastifyBasicAuth, {
     validate,
@@ -41,7 +54,7 @@ fastify.after(() => {
         //onRequest: fastify.basicAuth,
         handler: async (req, reply) => {
             return {
-                replique: 'Une autre route'
+                replique: 'Je rêvais, d\'une autre route... '
             }
         }
     });
