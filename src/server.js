@@ -34,7 +34,17 @@ fastify.after(() => {
                 replique: 'Un Lannister paye toujours ses dettes !'
             }
         }
-    })
+    });
+    fastify.route({
+        method: 'GET',
+        url: '/autre',
+        //onRequest: fastify.basicAuth,
+        handler: async (req, reply) => {
+            return {
+                replique: 'Une autre route'
+            }
+        }
+    });
 })
 
 fastify.setErrorHandler(function (err, req, reply) {
